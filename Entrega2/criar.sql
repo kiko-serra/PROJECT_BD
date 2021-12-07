@@ -199,8 +199,8 @@ CREATE TABLE LevelOfSponsorPlayer (
 DROP TABLE IF EXISTS LevelOfSponsorTournament;
 
 CREATE TABLE LevelOfSponsorTournament (
-    id_player INTEGER REFERENCES Player,
     id_tournament INTEGER REFERENCES Tournament,
+    id_sponsor INTEGER REFERENCES Sponsor,
     type TEXT CONSTRAINT null_LevelOfSponsorTournament_type NOT NULL CONSTRAINT check_LevelOfSponsorTournament_type CHECK (
         (
             type = "GOLD"
@@ -208,7 +208,7 @@ CREATE TABLE LevelOfSponsorTournament (
             OR type = "BRONZE"
         )
     ),
-    PRIMARY KEY (id_tournament, id_tournament)
+    PRIMARY KEY (id_tournament, id_sponsor)
 );
 
 COMMIT TRANSACTION;
