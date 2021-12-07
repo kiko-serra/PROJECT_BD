@@ -19,14 +19,42 @@
 #define SPONSOR_PHONE "sponsorPhone.txt"
 #define SPONSOR_EMAILS "sponsorEmails.txt"
 #define SPONSOR_ADDRESS "sponsorAddress.txt"
-#define MAX_PLAYERS 200
+#define CLUB_NAMES "clubs.txt"
+#define CLUB_ADDRESS "clubAddress.txt"
+#define MAX_PLAYERS 1000
 #define MAX_WEBSITES 10
 #define MAX_TOURNAMENTS 10
 #define MAX_MATCHS 200
 #define MAX_SPONSORS 500
 #define MAX_ACCOUNTS 419
+#define MAX_CLUBS 47
 #define M 10000
 #define N 100000
+#define LEVEL_OF_SPONSOR 3
+#define GOLD 0
+#define SILVER 1
+#define BRONZE 2
+
+char *levelOfSponsor()
+{
+    int aux = rand() % LEVEL_OF_SPONSOR;
+    if (aux == GOLD)
+    {
+        return "GOLD";
+    }
+
+    if (aux == SILVER)
+    {
+        return "SILVER";
+    }
+
+    if (aux == BRONZE)
+    {
+        return "BRONZE";
+    }
+
+    return NULL;
+}
 
 void swap(int *a, int *b)
 {
@@ -102,7 +130,9 @@ char *choose_random_word(const char *filename, const int numRand)
 
 int main()
 {
-    FILE *dest, *address, *phoneNumber, *names, *links, *emails, *nicknames, *sponsors, *sponsorsEmails, *sponsorsAddress, *sponsorsPhone;
+    FILE *dest, *address, *phoneNumber, *names, *links, *emails, *nicknames,
+        *sponsors, *sponsorsEmails, *sponsorsAddress, *sponsorsPhone, *clubAddress,
+        *clubNames;
     int uniqueId[M];
 
     srand(time(0));
@@ -167,6 +197,18 @@ int main()
         return 1;
     }
 
+    if ((clubNames = fopen(CLUB_NAMES, "r")) == NULL)
+    {
+        printf("Error opening file! :(\n");
+        return 1;
+    }
+
+    if ((clubAddress = fopen(CLUB_ADDRESS, "r")) == NULL)
+    {
+        printf("Error opening file! :(\n");
+        return 1;
+    }
+
     dest = fopen(DEST, "w");
 
     if (dest == NULL)
@@ -179,8 +221,10 @@ int main()
     randomize(uniqueId, M);
 
     char buff[256], buff2[256], buff3[256], buff4[256];
-    int aux, aux2 = 0, aux3 = 0, players[MAX_PLAYERS], winners[MAX_MATCHS], tournaments[MAX_TOURNAMENTS], websites[MAX_WEBSITES],
-             accounts[MAX_ACCOUNTS], matches[MAX_MATCHS], sponsor[MAX_SPONSORS];
+    int aux, aux2 = 0, aux3 = 0, players[MAX_PLAYERS], winners[MAX_MATCHS],
+             tournaments[MAX_TOURNAMENTS], websites[MAX_WEBSITES], accounts[MAX_ACCOUNTS],
+             matches[MAX_MATCHS], sponsor[MAX_SPONSORS], club[MAX_CLUBS],
+             playerSponsor[MAX_SPONSORS], tournamentSponsor[MAX_SPONSORS];
 
     // TABELA PLAYER
     fprintf(dest, "PRAGMA foreign_keys = on;\nBEGIN TRANSACTION;\n\n------------------------------------------------------TABLE PLAYER-------------------------------------------------------\n\n");
@@ -372,6 +416,43 @@ int main()
         sponsor[i] = uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS + MAX_MATCHS];
     }
 
+    // TABELA CHESS_CLUB
+    fprintf(dest, "\n\n\n------------------------------------------------------TABLE CHESS_CLUB-------------------------------------------------------\n\n");
+    for (int i = 0; i < MAX_CLUBS; i++)
+    {
+        fgets(buff, 255, (FILE *)clubNames);
+        buff[strlen(buff) - 1] = '\0';
+        fgets(buff2, 255, (FILE *)clubAddress);
+        buff2[strlen(buff2) - 1] = '\0';
+        fprintf(dest, "INSERT INTO ChessClub VALUES (%d,\"%s\",\"%s\",%d,%d);\n",
+                uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS + MAX_MATCHS + MAX_SPONSORS],
+                buff, buff2, rand() % 3000, 3);
+        club[i] = uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS + MAX_MATCHS + MAX_SPONSORS];
+    }
+
+    // TABELA MEMBER_ID
+    fprintf(dest, "\n\n\n------------------------------------------------------TABLE MEMBER_ID-------------------------------------------------------\n\n");
+    aux = 0;
+    aux2 = 0;
+    int numOfMembers[MAX_CLUBS];
+    for (int i = 0; i < MAX_CLUBS - 1; i++)
+    {
+        numOfMembers[i] = rand() % 30 + 3;
+    }
+    numOfMembers[MAX_CLUBS - 1] = MAX_PLAYERS;
+    for (int i = 0; i < MAX_PLAYERS; i++)
+    {
+        fprintf(dest, "INSERT INTO MemberId VALUES (%d,%d,%d);\n",
+                club[aux], players[i],
+                uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS + MAX_MATCHS + MAX_SPONSORS + MAX_CLUBS]);
+        if (aux < MAX_CLUBS && numOfMembers[aux] < aux2)
+        {
+            aux2 = 0;
+            aux++;
+        }
+        aux2++;
+    }
+
     // TABELA PLAYER_SPONSOR
     fprintf(dest, "\n\n\n------------------------------------------------------TABLE PLAYER_SPONSOR-------------------------------------------------------\n\n");
     aux2 = 0;
@@ -384,11 +465,13 @@ int main()
         case 0:
             fprintf(dest, "INSERT INTO PlayerSponsor VALUES (%d,%d);\n",
                     players[aux2], sponsor[i]);
+            playerSponsor[i] = 1;
             break;
         case 1:
             fprintf(dest, "INSERT INTO PlayerSponsor VALUES (%d,%d);\n",
                     players[aux2], sponsor[i]);
             aux2++;
+            playerSponsor[i] = 1;
             if (aux2 >= MAX_PLAYERS)
             {
                 aux3 = 1;
@@ -396,11 +479,13 @@ int main()
             }
             fprintf(dest, "INSERT INTO PlayerSponsor VALUES (%d,%d);\n",
                     players[aux2], sponsor[i]);
+            playerSponsor[i] = 2;
             break;
         case 2:
             fprintf(dest, "INSERT INTO PlayerSponsor VALUES (%d,%d);\n",
                     players[aux2], sponsor[i]);
             aux2++;
+            playerSponsor[i] = 1;
             if (aux2 >= MAX_PLAYERS)
             {
                 aux3 = 1;
@@ -409,6 +494,7 @@ int main()
             fprintf(dest, "INSERT INTO PlayerSponsor VALUES (%d,%d);\n",
                     players[aux2], sponsor[i]);
             aux2++;
+            playerSponsor[i] = 2;
             if (aux2 >= MAX_PLAYERS)
             {
                 aux3 = 1;
@@ -416,6 +502,7 @@ int main()
             }
             fprintf(dest, "INSERT INTO PlayerSponsor VALUES (%d,%d);\n",
                     players[aux2], sponsor[i]);
+            playerSponsor[i] = 3;
             break;
         }
         if (aux3 == 1)
@@ -424,9 +511,130 @@ int main()
         }
     }
 
+    // TABELA TOURNAMENT_SPONSOR
+    fprintf(dest, "\n\n\n------------------------------------------------------TABLE TOURNAMENT_SPONSOR-------------------------------------------------------\n\n");
+    aux2 = 0;
+    aux3 = 0;
+    for (int i = 0; i < MAX_SPONSORS; i++)
+    {
+        aux = rand() % 3;
+        switch (aux)
+        {
+        case 0:
+            fprintf(dest, "INSERT INTO TournamentSponsor VALUES (%d,%d);\n",
+                    tournaments[aux2], sponsor[i]);
+            tournamentSponsor[i] = 1;
+            break;
+        case 1:
+            fprintf(dest, "INSERT INTO TournamentSponsor VALUES (%d,%d);\n",
+                    tournaments[aux2], sponsor[i]);
+            aux2++;
+            tournamentSponsor[i] = 1;
+            if (aux2 >= MAX_TOURNAMENTS)
+            {
+                aux3 = 1;
+                break;
+            }
+            fprintf(dest, "INSERT INTO TournamentSponsor VALUES (%d,%d);\n",
+                    tournaments[aux2], sponsor[i]);
+            tournamentSponsor[i] = 2;
+            break;
+        case 2:
+            fprintf(dest, "INSERT INTO TournamentSponsor VALUES (%d,%d);\n",
+                    tournaments[aux2], sponsor[i]);
+            aux2++;
+            tournamentSponsor[i] = 1;
+            if (aux2 >= MAX_TOURNAMENTS)
+            {
+                aux3 = 1;
+                break;
+            }
+            fprintf(dest, "INSERT INTO TournamentSponsor VALUES (%d,%d);\n",
+                    tournaments[aux2], sponsor[i]);
+            aux2++;
+            tournamentSponsor[i] = 2;
+            if (aux2 >= MAX_TOURNAMENTS)
+            {
+                aux3 = 1;
+                break;
+            }
+            fprintf(dest, "INSERT INTO TournamentSponsor VALUES (%d,%d);\n",
+                    tournaments[aux2], sponsor[i]);
+            tournamentSponsor[i] = 3;
+            break;
+        }
+        if (aux3 == 1)
+        {
+            break;
+        }
+    }
+
+    // TABELA LEVEL_OF_SPONSOR_PLAYER
+    fprintf(dest, "\n\n\n------------------------------------------------------TABLE LEVEL_OF_SPONSOR_PLAYER-------------------------------------------------------\n\n");
+    aux2 = 0;
+    for (int i = 0; i < MAX_SPONSORS; i++)
+    {
+        switch (playerSponsor[i])
+        {
+        case 1:
+            fprintf(dest, "INSERT INTO LevelOfSponsorPlayer VALUES (%d,%d,\"%s\");\n",
+                    players[aux2], sponsor[i], levelOfSponsor());
+            break;
+        case 2:
+            fprintf(dest, "INSERT INTO LevelOfSponsorPlayer VALUES (%d,%d,\"%s\");\n",
+                    players[aux2], sponsor[i], levelOfSponsor());
+            aux2++;
+            fprintf(dest, "INSERT INTO LevelOfSponsorPlayer VALUES (%d,%d,\"%s\");\n",
+                    players[aux2], sponsor[i], levelOfSponsor());
+            break;
+        case 3:
+            fprintf(dest, "INSERT INTO LevelOfSponsorPlayer VALUES (%d,%d,\"%s\");\n",
+                    players[aux2], sponsor[i], levelOfSponsor());
+            aux2++;
+            fprintf(dest, "INSERT INTO LevelOfSponsorPlayer VALUES (%d,%d,\"%s\");\n",
+                    players[aux2], sponsor[i], levelOfSponsor());
+            aux2++;
+            fprintf(dest, "INSERT INTO LevelOfSponsorPlayer VALUES (%d,%d,\"%s\");\n",
+                    players[aux2], sponsor[i], levelOfSponsor());
+            break;
+        }
+    }
+
+    // TABELA LEVEL_OF_SPONSOR_TOURNAMENT
+    fprintf(dest, "\n\n\n------------------------------------------------------TABLE LEVEL_OF_SPONSOR_TOURNAMENT-------------------------------------------------------\n\n");
+    aux2 = 0;
+    for (int i = 0; i < MAX_SPONSORS; i++)
+    {
+        switch (tournamentSponsor[i])
+        {
+        case 1:
+            fprintf(dest, "INSERT INTO LevelOfSponsorTournament VALUES (%d,%d,\"%s\");\n",
+                    tournaments[aux2], sponsor[i], levelOfSponsor());
+            break;
+        case 2:
+            fprintf(dest, "INSERT INTO LevelOfSponsorTournament VALUES (%d,%d,\"%s\");\n",
+                    tournaments[aux2], sponsor[i], levelOfSponsor());
+            aux2++;
+            fprintf(dest, "INSERT INTO LevelOfSponsorTournament VALUES (%d,%d,\"%s\");\n",
+                    tournaments[aux2], sponsor[i], levelOfSponsor());
+            break;
+        case 3:
+            fprintf(dest, "INSERT INTO LevelOfSponsorTournament VALUES (%d,%d,\"%s\");\n",
+                    tournaments[aux2], sponsor[i], levelOfSponsor());
+            aux2++;
+            fprintf(dest, "INSERT INTO LevelOfSponsorTournament VALUES (%d,%d,\"%s\");\n",
+                    tournaments[aux2], sponsor[i], levelOfSponsor());
+            aux2++;
+            fprintf(dest, "INSERT INTO LevelOfSponsorTournament VALUES (%d,%d,\"%s\");\n",
+                    tournaments[aux2], sponsor[i], levelOfSponsor());
+            break;
+        }
+    }
+
     // TABELA PLAYER_ACCOUNT
     fprintf(dest, "\n\n\n------------------------------------------------------TABLE PLAYER_ACCOUNT-------------------------------------------------------\n\n");
     aux2 = 0;
+    aux3 = 0;
     for (int i = 0; i < MAX_PLAYERS; i++)
     {
         aux = rand() % 3;
@@ -440,6 +648,11 @@ int main()
             fprintf(dest, "INSERT INTO PlayerAccount VALUES (%d,%d);\n",
                     players[i], accounts[aux2]);
             aux2++;
+            if (aux2 >= MAX_ACCOUNTS)
+            {
+                aux3 = 1;
+                break;
+            }
             fprintf(dest, "INSERT INTO PlayerAccount VALUES (%d,%d);\n",
                     players[i], accounts[aux2]);
             break;
@@ -447,11 +660,25 @@ int main()
             fprintf(dest, "INSERT INTO PlayerAccount VALUES (%d,%d);\n",
                     players[i], accounts[aux2]);
             aux2++;
+            if (aux2 >= MAX_ACCOUNTS)
+            {
+                aux3 = 1;
+                break;
+            }
             fprintf(dest, "INSERT INTO PlayerAccount VALUES (%d,%d);\n",
                     players[i], accounts[aux2]);
             aux2++;
+            if (aux2 >= MAX_ACCOUNTS)
+            {
+                aux3 = 1;
+                break;
+            }
             fprintf(dest, "INSERT INTO PlayerAccount VALUES (%d,%d);\n",
                     players[i], accounts[aux2]);
+            break;
+        }
+        if (aux3 == 1)
+        {
             break;
         }
     }
@@ -498,8 +725,12 @@ int main()
                 players[aux2], matches[i]);
     }
 
-    fprintf(dest, "COMMIT TRANSACTION;\nPRAGMA foreign_keys = on;");
+    fprintf(dest, "\nCOMMIT TRANSACTION;");
 
+    fclose(sponsors);
+    fclose(sponsorsAddress);
+    fclose(sponsorsPhone);
+    fclose(sponsorsEmails);
     fclose(names);
     fclose(links);
     fclose(nicknames);
