@@ -24,6 +24,7 @@
 #define MAX_PLAYERS 1000
 #define MAX_WEBSITES 10
 #define MAX_TOURNAMENTS 10
+#define MAX_PLAYERS_IN_TOURNAMENTS 8
 #define MAX_MATCHS 200
 #define MAX_SPONSORS 500
 #define MAX_ACCOUNTS 419
@@ -34,6 +35,77 @@
 #define GOLD 0
 #define SILVER 1
 #define BRONZE 2
+
+int winnerMatchs(int playerW, int playerB)
+{
+    switch (rand() % 2)
+    {
+    case 0:
+        return playerW;
+    case 1:
+        return playerB;
+    default:
+        return -1;
+    }
+}
+
+void participantsInTournaments(int playersInTournament[MAX_PLAYERS_IN_TOURNAMENTS],
+                               int tournament_Players[MAX_TOURNAMENTS][MAX_PLAYERS_IN_TOURNAMENTS],
+                               int *pos)
+{
+    for (int i = 0; i < MAX_PLAYERS_IN_TOURNAMENTS; i++)
+    {
+        playersInTournament[i] = rand() % MAX_PLAYERS;
+        for (int j = 0; j < i; j++)
+        {
+            while (playersInTournament[i] == playersInTournament[j])
+            {
+                playersInTournament[i] = rand() % MAX_PLAYERS;
+            }
+        }
+        tournament_Players[*pos][i] = playersInTournament[i];
+    }
+}
+
+void winnersInTournamentsMatchs(int playersInTournament[MAX_PLAYERS_IN_TOURNAMENTS], int players[MAX_PLAYERS],
+                                int winner[MAX_PLAYERS_IN_TOURNAMENTS - 1], int playersThatPlayed[MAX_MATCHS][2],
+                                int *positionThatPlayed, int tournament_Players[MAX_TOURNAMENTS][MAX_PLAYERS_IN_TOURNAMENTS],
+                                int *positionTChessClub)
+{
+    int pos = 0;
+    participantsInTournaments(playersInTournament, tournament_Players, positionTChessClub);
+    for (int i = 0; i < MAX_PLAYERS_IN_TOURNAMENTS; i += 2)
+    {
+        winner[pos] = winnerMatchs(players[playersInTournament[i]], players[playersInTournament[i + 1]]);
+        playersThatPlayed[*positionThatPlayed][0] = players[playersInTournament[i]];
+        playersThatPlayed[*positionThatPlayed][1] = players[playersInTournament[i + 1]];
+        (*positionThatPlayed)++;
+        pos++;
+    }
+    for (int i = 0; i < MAX_PLAYERS_IN_TOURNAMENTS / 2; i += 2)
+    {
+        winner[pos] = winnerMatchs(winner[i], winner[i + 1]);
+        playersThatPlayed[*positionThatPlayed][0] = winner[i];
+        playersThatPlayed[*positionThatPlayed][1] = winner[i + 1];
+        (*positionThatPlayed)++;
+        pos++;
+    }
+    winner[pos] = winnerMatchs(winner[4], winner[5]);
+    playersThatPlayed[*positionThatPlayed][0] = winner[4];
+    playersThatPlayed[*positionThatPlayed][1] = winner[5];
+    (*positionThatPlayed)++;
+}
+
+int randomWebsite(int website[MAX_WEBSITES])
+{
+    int aux = rand() % MAX_WEBSITES * 2;
+    if (aux < MAX_WEBSITES)
+    {
+        return website[aux];
+    }
+
+    return -1;
+}
 
 char *levelOfSponsor()
 {
@@ -220,11 +292,15 @@ int main()
     choose_random_unique_number(uniqueId);
     randomize(uniqueId, M);
 
-    char buff[256], buff2[256], buff3[256], buff4[256];
+    char buff[256], buff2[256], buff3[256], buff4[256], dateOfTournament[MAX_TOURNAMENTS][12];
     int aux, aux2 = 0, aux3 = 0, players[MAX_PLAYERS], winners[MAX_MATCHS],
              tournaments[MAX_TOURNAMENTS], websites[MAX_WEBSITES], accounts[MAX_ACCOUNTS],
              matches[MAX_MATCHS], sponsor[MAX_SPONSORS], club[MAX_CLUBS],
-             playerSponsor[MAX_SPONSORS], tournamentSponsor[MAX_SPONSORS];
+             playerSponsor[MAX_SPONSORS], tournamentSponsor[MAX_SPONSORS],
+             playersInTournament[MAX_PLAYERS_IN_TOURNAMENTS], winnersInTournaments[MAX_PLAYERS_IN_TOURNAMENTS - 1],
+             playerW, playerB, playersThatPlayed[MAX_MATCHS][2], positionThatPlayed = 0,
+             matchChessClub[MAX_MATCHS][2], tournament_Players[MAX_TOURNAMENTS][MAX_PLAYERS_IN_TOURNAMENTS],
+             positionTChessClub = 0, tournamentChessClub[MAX_TOURNAMENTS][MAX_PLAYERS_IN_TOURNAMENTS];
 
     // TABELA PLAYER
     fprintf(dest, "PRAGMA foreign_keys = on;\nBEGIN TRANSACTION;\n\n------------------------------------------------------TABLE PLAYER-------------------------------------------------------\n\n");
@@ -345,57 +421,100 @@ int main()
     for (int i = 0; i < MAX_TOURNAMENTS; i++)
     {
         char *dateAux = choose_random_word(MATCH_DATE, rand() % 1000);
-        if (i == MAX_TOURNAMENTS - 1)
-        {
-            fprintf(dest, "INSERT INTO Tournament VALUES (%d,'%s','%s',\"%s\",%s,%d);\n",
-                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS], dateAux, dateAux,
-                    strcat(choose_random_word(NAMES, rand() % 1000), " Tournament"), "NULL", websites[MAX_WEBSITES - 1]);
-        }
-        else
-        {
-            fprintf(dest, "INSERT INTO Tournament VALUES (%d,'%s','%s',\"%s\",%s,%s);\n",
-                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS], dateAux, dateAux,
-                    strcat(choose_random_word(NAMES, rand() % 1000), " Tournament"), "NULL", "NULL");
-        }
+        fprintf(dest, "INSERT INTO Tournament VALUES (%d,'%s','%s',\"%s\",%s,%s);\n",
+                uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS], dateAux, dateAux,
+                strcat(choose_random_word(NAMES, rand() % 1000), " Tournament"), "NULL", "NULL");
         tournaments[i] = uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS];
+        strcpy(dateOfTournament[i], dateAux);
     }
 
     // TABELA MATCH
     fprintf(dest, "\n\n\n------------------------------------------------------TABLE MATCH-------------------------------------------------------\n\n");
-    for (int i = 0; i < MAX_MATCHS; i++)
+    for (int i = 0; i < MAX_MATCHS - ((MAX_PLAYERS_IN_TOURNAMENTS - 1) * MAX_TOURNAMENTS); i++)
     {
-        aux = rand() % 200;
-        if (aux2 < MAX_TOURNAMENTS - 1)
+        do
         {
-            fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s\",'%s','%s','%s',%d,%d,%d,%s);\n",
-                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], players[aux], choose_random_word(SURNAMES, rand() % 1000), choose_random_word(MATCH_DATE, rand() % 1000), choose_random_word(MATCH_DURATION, rand() % 12), choose_random_word(MATCH_DURATION, rand() % 12),
-                    rand() % 30, rand() % 120 + 10, tournaments[aux2], "NULL");
-            aux2++;
-        }
-        else if (aux3 < MAX_WEBSITES - 1)
+            playerW = players[rand() % MAX_PLAYERS];
+            playerB = players[rand() % MAX_PLAYERS];
+        } while (playerW == playerB);
+        winners[i] = winnerMatchs(playerW, playerB);
+        playersThatPlayed[i][0] = playerW;
+        playersThatPlayed[i][1] = playerB;
+        aux2 = randomWebsite(websites);
+        if (aux2 == -1)
         {
-            fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s\",'%s','%s','%s',%d,%d,%s,%d);\n",
-                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], players[aux], choose_random_word(SURNAMES, rand() % 1000), choose_random_word(MATCH_DATE, rand() % 1000), choose_random_word(MATCH_DURATION, rand() % 12), choose_random_word(MATCH_DURATION, rand() % 12),
-                    rand() % 30, rand() % 120 + 10, "NULL", websites[aux3]);
-            aux3++;
-        }
-        else if (aux2 == MAX_TOURNAMENTS - 1 && aux3 == MAX_WEBSITES - 1)
-        {
-            fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s\",'%s','%s','%s',%d,%d,%d,%d);\n",
-                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], players[aux], choose_random_word(SURNAMES, rand() % 1000), choose_random_word(MATCH_DATE, rand() % 1000), choose_random_word(MATCH_DURATION, rand() % 12), choose_random_word(MATCH_DURATION, rand() % 12),
-                    rand() % 30, rand() % 120 + 10, tournaments[aux2], websites[aux3]);
-            aux3++;
-            aux2++;
+            fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s\",'%s','%s','%s',%d,%d,%s,%s);\n",
+                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], winners[i],
+                    choose_random_word(SURNAMES, rand() % 1000), choose_random_word(MATCH_DATE, rand() % 1000),
+                    choose_random_word(MATCH_DURATION, rand() % 12), choose_random_word(MATCH_DURATION, rand() % 12),
+                    rand() % 30, rand() % 120 + 10, "NULL", "NULL");
         }
         else
         {
-            fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s\",'%s','%s','%s',%d,%d,%s,%s);\n",
-                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], players[aux], choose_random_word(SURNAMES, rand() % 1000), choose_random_word(MATCH_DATE, rand() % 1000), choose_random_word(MATCH_DURATION, rand() % 12), choose_random_word(MATCH_DURATION, rand() % 12),
-                    rand() % 30, rand() % 120 + 10, "NULL", "NULL");
+            fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s\",'%s','%s','%s',%d,%d,%s,%d);\n",
+                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], winners[i],
+                    choose_random_word(SURNAMES, rand() % 1000), choose_random_word(MATCH_DATE, rand() % 1000),
+                    choose_random_word(MATCH_DURATION, rand() % 12), choose_random_word(MATCH_DURATION, rand() % 12),
+                    rand() % 30, rand() % 120 + 10, "NULL", aux2);
         }
 
         matches[i] = uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS];
-        winners[i] = aux;
+    }
+
+    positionThatPlayed = MAX_MATCHS - ((MAX_PLAYERS_IN_TOURNAMENTS - 1) * MAX_TOURNAMENTS);
+
+    winnersInTournamentsMatchs(playersInTournament, players, winnersInTournaments, playersThatPlayed,
+                               &positionThatPlayed, tournament_Players, &positionTChessClub);
+    aux = 0;
+    aux2 = randomWebsite(websites);
+    aux3 = 0;
+    for (int i = MAX_MATCHS - ((MAX_PLAYERS_IN_TOURNAMENTS - 1) * MAX_TOURNAMENTS); i < MAX_MATCHS; i++)
+    {
+
+        if (aux2 == -1)
+        {
+            fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s\",'%s','%s','%s',%d,%d,%d,%s);\n",
+                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS],
+                    winnersInTournaments[aux], choose_random_word(SURNAMES, rand() % 1000),
+                    dateOfTournament[aux3], choose_random_word(MATCH_DURATION, rand() % 12),
+                    choose_random_word(MATCH_DURATION, rand() % 12), rand() % 30, rand() % 120 + 10,
+                    tournaments[aux3], "NULL");
+        }
+        else
+        {
+            fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s\",'%s','%s','%s',%d,%d,%d,%d);\n",
+                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS],
+                    winnersInTournaments[aux], choose_random_word(SURNAMES, rand() % 1000),
+                    dateOfTournament[aux3], choose_random_word(MATCH_DURATION, rand() % 12),
+                    choose_random_word(MATCH_DURATION, rand() % 12), rand() % 30, rand() % 120 + 10,
+                    tournaments[aux3], aux2);
+        }
+        matches[i] = uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS];
+
+        aux++;
+        if (aux == MAX_PLAYERS_IN_TOURNAMENTS - 1)
+        {
+            if (aux2 == -1)
+            {
+                fprintf(dest, "UPDATE Tournament SET winner = %d WHERE id_tournament = %d;\n",
+                        winnersInTournaments[aux - 1], tournaments[aux3]);
+            }
+            else
+            {
+                fprintf(dest, "UPDATE Tournament SET winner = %d, id_website = %d WHERE id_tournament = %d;\n",
+                        winnersInTournaments[aux - 1], aux2, tournaments[aux3]);
+            }
+
+            aux3++;
+            positionTChessClub++;
+            if (aux3 == MAX_TOURNAMENTS)
+            {
+                break;
+            }
+            winnersInTournamentsMatchs(playersInTournament, players, winnersInTournaments, playersThatPlayed, &positionThatPlayed, tournament_Players, &positionTChessClub);
+            aux = 0;
+            aux2 = randomWebsite(websites);
+        }
     }
 
     // TABELA SPONSOR
@@ -414,6 +533,30 @@ int main()
                 uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS + MAX_MATCHS],
                 buff, buff2, buff3, buff4);
         sponsor[i] = uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS + MAX_MATCHS];
+    }
+
+    // TABELA PLAYER_MATCH
+    fprintf(dest, "\n\n\n------------------------------------------------------TABLE PLAYER_MATCH-------------------------------------------------------\n\n");
+    for (int i = 0; i < MAX_MATCHS; i++)
+    {
+        fprintf(dest, "INSERT INTO PlayerMatch VALUES (%d,%d);\n",
+                playersThatPlayed[i][0], matches[i]);
+        fprintf(dest, "INSERT INTO PlayerMatch VALUES (%d,%d);\n",
+                playersThatPlayed[i][1], matches[i]);
+        matchChessClub[i][0] = playersThatPlayed[i][0];
+        matchChessClub[i][1] = playersThatPlayed[i][1];
+    }
+
+    // TABELA PLAYER_TOURNAMENT
+    fprintf(dest, "\n\n\n------------------------------------------------------TABLE PLAYER_TOURNAMENT-------------------------------------------------------\n\n");
+    for (int i = 0; i < MAX_TOURNAMENTS; i++)
+    {
+        for (int j = 0; j < MAX_PLAYERS_IN_TOURNAMENTS; j++)
+        {
+            fprintf(dest, "INSERT INTO PlayerTournament VALUES (%d,%d);\n",
+                    players[tournament_Players[i][j]], tournaments[i]);
+            tournamentChessClub[i][j] = players[tournament_Players[i][j]];
+        }
     }
 
     // TABELA CHESS_CLUB
@@ -445,13 +588,41 @@ int main()
         fprintf(dest, "INSERT INTO MemberId VALUES (%d,%d,%d);\n",
                 club[aux], players[i],
                 uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS + MAX_MATCHS + MAX_SPONSORS + MAX_CLUBS]);
-        if (aux < MAX_CLUBS && numOfMembers[aux] < aux2)
+        for (int j = 0; j < MAX_PLAYERS; j++)
         {
+            if (matchChessClub[j][0] == players[i])
+            {
+                matchChessClub[j][0] = club[aux];
+            }
+
+            if (matchChessClub[j][1] == players[i])
+            {
+                matchChessClub[j][1] = club[aux];
+            }
+        }
+
+        for (int j = 0; j < MAX_TOURNAMENTS; j++)
+        {
+            for (int k = 0; k < MAX_PLAYERS_IN_TOURNAMENTS; k++)
+            {
+                if (tournamentChessClub[j][k] == players[i])
+                {
+                    tournamentChessClub[j][k] = club[aux];
+                }
+            }
+        }
+        if (numOfMembers[aux] <= aux2)
+        {
+            fprintf(dest, "UPDATE ChessClub SET number_of_members = %d WHERE id_club = %d;\n",
+                    numOfMembers[aux], club[aux]);
             aux2 = 0;
             aux++;
         }
         aux2++;
     }
+    aux2--;
+    fprintf(dest, "UPDATE ChessClub SET number_of_members = %d WHERE id_club = %d;\n",
+            aux2, club[MAX_CLUBS - 1]);
 
     // TABELA PLAYER_SPONSOR
     fprintf(dest, "\n\n\n------------------------------------------------------TABLE PLAYER_SPONSOR-------------------------------------------------------\n\n");
@@ -683,50 +854,50 @@ int main()
         }
     }
 
-    // TABELA PLAYER_TOURNAMENT
-    fprintf(dest, "\n\n\n------------------------------------------------------TABLE PLAYER_TOURNAMENT-------------------------------------------------------\n\n");
-    aux2 = 0;
-    int counter = 0;
-    for (int i = 0; i < MAX_PLAYERS && aux2 < MAX_TOURNAMENTS; i++)
-    {
-        aux = rand() % 3;
-        switch (aux)
-        {
-        case 0:
-            fprintf(dest, "INSERT INTO PlayerTournament VALUES (%d,%d);\n",
-                    players[i], tournaments[aux2]);
-            counter++;
-            break;
-        case 1:
-            break;
-        case 2:
-            break;
-        }
-        if (counter == 8)
-        {
-            counter = 0;
-            aux2++;
-        }
-    }
-
-    // TABELA PLAYER_MATCH
-    fprintf(dest, "\n\n\n------------------------------------------------------TABLE PLAYER_MATCH-------------------------------------------------------\n\n");
+    // TABELA MATCH_CHESS_CLUB
+    fprintf(dest, "\n\n\n------------------------------------------------------TABLE MATCH_CHESS_CLUB-------------------------------------------------------\n\n");
     for (int i = 0; i < MAX_MATCHS; i++)
     {
-        do
+        if (matchChessClub[i][0] != matchChessClub[i][1])
         {
-            aux = rand() % MAX_PLAYERS;
-            aux2 = rand() % MAX_PLAYERS;
-        } while (aux == aux2);
-
-        fprintf(dest, "INSERT INTO PlayerMatch VALUES (%d,%d);\n",
-                players[aux], matches[i]);
-        fprintf(dest, "INSERT INTO PlayerMatch VALUES (%d,%d);\n",
-                players[aux2], matches[i]);
+            fprintf(dest, "INSERT INTO MatchChessClub VALUES (%d,%d);\n",
+                    matches[i], matchChessClub[i][0]);
+        }
+        fprintf(dest, "INSERT INTO MatchChessClub VALUES (%d,%d);\n",
+                matches[i], matchChessClub[i][1]);
     }
+
+    // TABELA TOURNAMENT_CHESS_CLUB
+    fprintf(dest, "\n\n\n------------------------------------------------------TABLE TOURNAMENT_CHESS_CLUB-------------------------------------------------------\n\n");
+    aux = 1;
+    for (int i = 0; i < MAX_TOURNAMENTS; i++)
+    {
+        for (int j = 0; j < MAX_PLAYERS_IN_TOURNAMENTS; j++)
+        {
+            for (int k = j + 1; k < MAX_PLAYERS_IN_TOURNAMENTS; k++)
+            {
+                if (tournamentChessClub[i][j] == tournamentChessClub[i][k])
+                {
+                    aux = 0;
+                    break;
+                }
+            }
+
+            if (aux == 1)
+            {
+                fprintf(dest, "INSERT INTO TournamentChessClub VALUES (%d,%d);\n",
+                        tournaments[i], tournamentChessClub[i][j]);
+            }
+            aux = 1;
+        }
+    }
+
+    //TournamentChessClub(id_tournament->Tournament, id_club->ChessClub)
 
     fprintf(dest, "\nCOMMIT TRANSACTION;");
 
+    fclose(clubNames);
+    fclose(clubAddress);
     fclose(sponsors);
     fclose(sponsorsAddress);
     fclose(sponsorsPhone);
