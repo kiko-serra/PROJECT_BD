@@ -81,7 +81,7 @@ CREATE TABLE Match (
     increment INTEGER CONSTRAINT null_Match_increment NOT NULL CONSTRAINT zero_Match_increment CHECK(increment >= 0),
     number_of_moves INTEGER CONSTRAINT null_Match_numberOfMoves NOT NULL CONSTRAINT zero_Match_numberOfMoves CHECK(number_of_moves >= 0),
     id_tournament INTEGER REFERENCES Tournament ON DELETE CASCADE ON UPDATE CASCADE,
-    id_website INTEGER REFERENCES WebsiteON ON DELETE CASCADE ON UPDATE CASCADE
+    id_website INTEGER REFERENCES Website ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: Sponsor
@@ -121,7 +121,7 @@ CREATE TABLE ChessClub (
     name TEXT CONSTRAINT null_ChessClub_name NOT NULL CONSTRAINT unique_ChessClub_name UNIQUE,
     ranking INTEGER CONSTRAINT null_ChessClub_ranking NOT NULL CONSTRAINT zero_ChessClub_ranking CHECK (ranking >= 0),
     adress TEXT CONSTRAINT null_ChessClub_adress NOT NULL CONSTRAINT unique_ChessClub_adress UNIQUE,
-    number_of_members INTEGER CONSTRAINT zero_ChessClub_number_of_members CHECK (number_of_members > 3)
+    number_of_members INTEGER CONSTRAINT zero_ChessClub_number_of_members CHECK (number_of_members >= 3)
 );
 
 -- Table: MemberId
