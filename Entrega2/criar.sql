@@ -13,23 +13,30 @@ CREATE TABLE Player (
     phone_number TEXT CONSTRAINT unique_Player_phoneNumber UNIQUE,
     birthday DATE CONSTRAINT null_Player_birthday NOT NULL
 );
+-- Table: FideRanking
+DROP TABLE IF EXISTS FideRanking;
 
--- Table: Match
-DROP TABLE IF EXISTS Match;
+CREATE TABLE FideRanking (
+    id_player INTEGER PRIMARY KEY REFERENCES Player,
+    category TEXT CONSTRAINT null_FideRanking_category NOT NULL CONSTRAINT check_FideRanking_category CHECK (
+        (
+            category = "MEN"
+            OR category = "WOMEN"
+            OR category = "JUNIORS"
+            OR category = "GIRLS"
+        )
+    ),
+    title TEXT,
+    number_of_elo_points INTEGER CONSTRAINT zero_FideRanking_numberOfEloPoints CHECK(number_of_elo_points >= 0)
+);
 
-CREATE TABLE Match (
-    id_match INTEGER PRIMARY KEY,
-    --CHECK AGAIN
-    result INTEGER REFERENCES Player,
-    --------------------------------
-    details TEXT,
-    date DATE CONSTRAINT null_Match_date NOT NULL,
-    duration_white TIME CONSTRAINT null_Match_durationWhite NOT NULL,
-    duration_black TIME CONSTRAINT null_Match_durationBlack NOT NULL,
-    increment INTEGER CONSTRAINT null_Match_increment NOT NULL,
-    number_of_moves INTEGER CONSTRAINT null_Match_numberOfMoves NOT NULL,
-    id_tournament INTEGER REFERENCES Tournament,
-    id_website INTEGER REFERENCES Website
+-- Table: Website
+DROP TABLE IF EXISTS Website;
+
+CREATE TABLE Website (
+    id_website INTEGER PRIMARY KEY,
+    link TEXT CONSTRAINT null_Website_link NOT NULL CONSTRAINT unique_Website_link UNIQUE,
+    name TEXT CONSTRAINT null_Website_name NOT NULL CONSTRAINT unique_Website_name UNIQUE
 );
 
 -- Table: Account
@@ -58,84 +65,22 @@ CREATE TABLE Tournament (
     id_website INTEGER REFERENCES Website
 );
 
--- Table: PlayerSponsor
-DROP TABLE IF EXISTS PlayerSponsor;
+-- Table: Match
+DROP TABLE IF EXISTS Match;
 
-CREATE TABLE PlayerSponsor (
-    id_player INTEGER REFERENCES Player,
-    id_sponsor INTEGER REFERENCES Sponsor,
-    PRIMARY KEY(id_player, id_sponsor)
-);
-
--- Table: PlayerTournament
-DROP TABLE IF EXISTS PlayerTournament;
-
-CREATE TABLE PlayerTournament (
-    id_player INTEGER REFERENCES Player,
+CREATE TABLE Match (
+    id_match INTEGER PRIMARY KEY,
+    --CHECK AGAIN
+    result INTEGER REFERENCES Player,
+    --------------------------------
+    details TEXT,
+    date DATE CONSTRAINT null_Match_date NOT NULL,
+    duration_white TIME CONSTRAINT null_Match_durationWhite NOT NULL,
+    duration_black TIME CONSTRAINT null_Match_durationBlack NOT NULL,
+    increment INTEGER CONSTRAINT null_Match_increment NOT NULL,
+    number_of_moves INTEGER CONSTRAINT null_Match_numberOfMoves NOT NULL,
     id_tournament INTEGER REFERENCES Tournament,
-    PRIMARY KEY(id_player, id_tournament)
-);
-
--- Table: PlayerMatch
-DROP TABLE IF EXISTS PlayerMatch;
-
-CREATE TABLE PlayerMatch (
-    id_player INTEGER REFERENCES Player,
-    id_match INTEGER REFERENCES Match,
-    PRIMARY KEY(id_player, id_match)
-);
-
--- Table: PlayerAccount
-DROP TABLE IF EXISTS PlayerAccount;
-
-CREATE TABLE PlayerAccount (
-    id_player INTEGER REFERENCES Player,
-    id_account INTEGER REFERENCES Account,
-    PRIMARY KEY(id_player, id_account)
-);
-
--- Table: MatchChessClub
-DROP TABLE IF EXISTS MatchChessClub;
-
-CREATE TABLE MatchChessClub (
-    id_match INTEGER REFERENCES Match,
-    id_club INTEGER REFERENCES ChessClub,
-    PRIMARY KEY(id_match, id_club)
-);
-
--- Table: TournamentChessClub
-DROP TABLE IF EXISTS TournamentChessClub;
-
-CREATE TABLE TournamentChessClub (
-    id_tournament INTEGER REFERENCES Tournament,
-    id_club INTEGER REFERENCES ChessClub,
-    PRIMARY KEY(id_tournament, id_club)
-);
-
--- Table: TournamentSponsor
-DROP TABLE IF EXISTS TournamentSponsor;
-
-CREATE TABLE TournamentSponsor (
-    id_tournament INTEGER REFERENCES Tournament,
-    id_sponsor INTEGER REFERENCES Sponsor,
-    PRIMARY KEY(id_tournament, id_sponsor)
-);
-
--- Table: FideRanking
-DROP TABLE IF EXISTS FideRanking;
-
-CREATE TABLE FideRanking (
-    id_player INTEGER PRIMARY KEY REFERENCES Player,
-    category TEXT CONSTRAINT null_FideRanking_category NOT NULL CONSTRAINT check_FideRanking_category CHECK (
-        (
-            category = "MEN"
-            OR category = "WOMEN"
-            OR category = "JUNIORS"
-            OR category = "GIRLS"
-        )
-    ),
-    title TEXT,
-    number_of_elo_points INTEGER CONSTRAINT zero_FideRanking_numberOfEloPoints CHECK(number_of_elo_points >= 0)
+    id_website INTEGER REFERENCES Website
 );
 
 -- Table: Sponsor
@@ -149,13 +94,22 @@ CREATE TABLE Sponsor (
     adress TEXT CONSTRAINT unique_Sponsor_adress UNIQUE
 );
 
--- Table: Website
-DROP TABLE IF EXISTS Website;
+-- Table: PlayerMatch
+DROP TABLE IF EXISTS PlayerMatch;
 
-CREATE TABLE Website (
-    id_website INTEGER PRIMARY KEY,
-    link TEXT CONSTRAINT null_Website_link NOT NULL CONSTRAINT unique_Website_link UNIQUE,
-    name TEXT CONSTRAINT null_Website_name NOT NULL CONSTRAINT unique_Website_name UNIQUE
+CREATE TABLE PlayerMatch (
+    id_player INTEGER REFERENCES Player,
+    id_match INTEGER REFERENCES Match,
+    PRIMARY KEY(id_player, id_match)
+);
+
+-- Table: PlayerTournament
+DROP TABLE IF EXISTS PlayerTournament;
+
+CREATE TABLE PlayerTournament (
+    id_player INTEGER REFERENCES Player,
+    id_tournament INTEGER REFERENCES Tournament,
+    PRIMARY KEY(id_player, id_tournament)
 );
 
 -- Table: ChessClub
@@ -177,6 +131,24 @@ CREATE TABLE MemberId (
     id_player INTEGER REFERENCES Player,
     member_id INTEGER CONSTRAINT null_MemberId_member_id NOT NULL,
     PRIMARY KEY (id_club, id_player)
+);
+
+-- Table: PlayerSponsor
+DROP TABLE IF EXISTS PlayerSponsor;
+
+CREATE TABLE PlayerSponsor (
+    id_player INTEGER REFERENCES Player,
+    id_sponsor INTEGER REFERENCES Sponsor,
+    PRIMARY KEY(id_player, id_sponsor)
+);
+
+-- Table: TournamentSponsor
+DROP TABLE IF EXISTS TournamentSponsor;
+
+CREATE TABLE TournamentSponsor (
+    id_tournament INTEGER REFERENCES Tournament,
+    id_sponsor INTEGER REFERENCES Sponsor,
+    PRIMARY KEY(id_tournament, id_sponsor)
 );
 
 -- Table: LevelOfSponsorPlayer
@@ -210,6 +182,49 @@ CREATE TABLE LevelOfSponsorTournament (
     ),
     PRIMARY KEY (id_tournament, id_sponsor)
 );
+
+-- Table: PlayerAccount
+DROP TABLE IF EXISTS PlayerAccount;
+
+CREATE TABLE PlayerAccount (
+    id_player INTEGER REFERENCES Player,
+    id_account INTEGER REFERENCES Account,
+    PRIMARY KEY(id_player, id_account)
+);
+
+-- Table: MatchChessClub
+DROP TABLE IF EXISTS MatchChessClub;
+
+CREATE TABLE MatchChessClub (
+    id_match INTEGER REFERENCES Match,
+    id_club INTEGER REFERENCES ChessClub,
+    PRIMARY KEY(id_match, id_club)
+);
+
+-- Table: TournamentChessClub
+DROP TABLE IF EXISTS TournamentChessClub;
+
+CREATE TABLE TournamentChessClub (
+    id_tournament INTEGER REFERENCES Tournament,
+    id_club INTEGER REFERENCES ChessClub,
+    PRIMARY KEY(id_tournament, id_club)
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 COMMIT TRANSACTION;
 
