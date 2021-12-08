@@ -38,6 +38,19 @@
 
 int winnerMatchs(int playerW, int playerB)
 {
+    switch (rand() % 3)
+    {
+    case 0:
+        return playerW;
+    case 1:
+        return playerB;
+    default:
+        return -1;
+    }
+}
+
+int winnerMatchsTournament(int playerW, int playerB)
+{
     switch (rand() % 2)
     {
     case 0:
@@ -76,7 +89,7 @@ void winnersInTournamentsMatchs(int playersInTournament[MAX_PLAYERS_IN_TOURNAMEN
     participantsInTournaments(playersInTournament, tournament_Players, positionTChessClub);
     for (int i = 0; i < MAX_PLAYERS_IN_TOURNAMENTS; i += 2)
     {
-        winner[pos] = winnerMatchs(players[playersInTournament[i]], players[playersInTournament[i + 1]]);
+        winner[pos] = winnerMatchsTournament(players[playersInTournament[i]], players[playersInTournament[i + 1]]);
         playersThatPlayed[*positionThatPlayed][0] = players[playersInTournament[i]];
         playersThatPlayed[*positionThatPlayed][1] = players[playersInTournament[i + 1]];
         (*positionThatPlayed)++;
@@ -84,13 +97,13 @@ void winnersInTournamentsMatchs(int playersInTournament[MAX_PLAYERS_IN_TOURNAMEN
     }
     for (int i = 0; i < MAX_PLAYERS_IN_TOURNAMENTS / 2; i += 2)
     {
-        winner[pos] = winnerMatchs(winner[i], winner[i + 1]);
+        winner[pos] = winnerMatchsTournament(winner[i], winner[i + 1]);
         playersThatPlayed[*positionThatPlayed][0] = winner[i];
         playersThatPlayed[*positionThatPlayed][1] = winner[i + 1];
         (*positionThatPlayed)++;
         pos++;
     }
-    winner[pos] = winnerMatchs(winner[4], winner[5]);
+    winner[pos] = winnerMatchsTournament(winner[4], winner[5]);
     playersThatPlayed[*positionThatPlayed][0] = winner[4];
     playersThatPlayed[*positionThatPlayed][1] = winner[5];
     (*positionThatPlayed)++;
@@ -441,21 +454,65 @@ int main()
         playersThatPlayed[i][0] = playerW;
         playersThatPlayed[i][1] = playerB;
         aux2 = randomWebsite(websites);
+        aux3 = rand() % 120 + 10;
+        strcpy(buff, choose_random_word(MATCH_DURATION, rand() % 12));
         if (aux2 == -1)
         {
-            fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s\",'%s','%s','%s',%d,%d,%s,%s);\n",
-                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], winners[i],
-                    choose_random_word(SURNAMES, rand() % 1000), choose_random_word(MATCH_DATE, rand() % 1000),
-                    choose_random_word(MATCH_DURATION, rand() % 12), choose_random_word(MATCH_DURATION, rand() % 12),
-                    rand() % 30, rand() % 120 + 10, "NULL", "NULL");
+            if (winners[i] != -1)
+            {
+                fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s%d\",'%s','%s','%s',%d,%d,%s,%s);\n",
+                        uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], winners[i],
+                        "Win at move ", aux3, choose_random_word(MATCH_DATE, rand() % 1000),
+                        buff, buff, rand() % 30, aux3, "NULL", "NULL");
+            }
+            else
+            {
+                switch (rand() % 3)
+                {
+                case 0:
+                    fprintf(dest, "INSERT INTO Match VALUES (%d,%s,\"%s\",'%s','%s','%s',%d,%d,%s,%s);\n",
+                            uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], "NULL",
+                            "Stalemate", choose_random_word(MATCH_DATE, rand() % 1000),
+                            buff, buff, rand() % 30, aux3, "NULL", "NULL");
+                    break;
+
+                default:
+                    fprintf(dest, "INSERT INTO Match VALUES (%d,%s,%s,'%s','%s','%s',%d,%d,%s,%s);\n",
+                            uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], "NULL",
+                            "NULL", choose_random_word(MATCH_DATE, rand() % 1000),
+                            buff, buff, rand() % 30, aux3, "NULL", "NULL");
+                    break;
+                }
+            }
         }
         else
         {
-            fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s\",'%s','%s','%s',%d,%d,%s,%d);\n",
-                    uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], winners[i],
-                    choose_random_word(SURNAMES, rand() % 1000), choose_random_word(MATCH_DATE, rand() % 1000),
-                    choose_random_word(MATCH_DURATION, rand() % 12), choose_random_word(MATCH_DURATION, rand() % 12),
-                    rand() % 30, rand() % 120 + 10, "NULL", aux2);
+            if (winners[i] != -1)
+            {
+                fprintf(dest, "INSERT INTO Match VALUES (%d,%d,\"%s%d\",'%s','%s','%s',%d,%d,%s,%d);\n",
+                        uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], winners[i],
+                        "Win at move ", aux3, choose_random_word(MATCH_DATE, rand() % 1000),
+                        buff, buff, rand() % 30, aux3, "NULL", aux2);
+            }
+            else
+            {
+                switch (rand() % 3)
+                {
+                case 0:
+                    fprintf(dest, "INSERT INTO Match VALUES (%d,%s,\"%s\",'%s','%s','%s',%d,%d,%s,%d);\n",
+                            uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], "NULL",
+                            "Stalemate", choose_random_word(MATCH_DATE, rand() % 1000),
+                            buff, buff, rand() % 30, aux3, "NULL", aux2);
+                    break;
+
+                default:
+                    fprintf(dest, "INSERT INTO Match VALUES (%d,%s,%s,'%s','%s','%s',%d,%d,%s,%d);\n",
+                            uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS], "NULL",
+                            "NULL", choose_random_word(MATCH_DATE, rand() % 1000),
+                            buff, buff, rand() % 30, aux3, "NULL", aux2);
+                    break;
+                }
+            }
         }
 
         matches[i] = uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS];
