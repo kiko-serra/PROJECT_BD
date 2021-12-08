@@ -49,7 +49,7 @@ CREATE TABLE Account (
     email TEXT CONSTRAINT unique_Account_email UNIQUE CONSTRAINT null_Account_email NOT NULL,
     title TEXT,
     number_of_points INTEGER CONSTRAINT zero_Account_numberOfPoints CHECK(number_of_points >= 0),
-    id_website INTEGER REFERENCES WebsiteON ON DELETE CASCADE ON UPDATE CASCADE
+    id_website INTEGER REFERENCES Website ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: Tournament
@@ -61,9 +61,9 @@ CREATE TABLE Tournament (
     end_date DATE CONSTRAINT null_Tournament_endDate NOT NULL,
     name TEXT CONSTRAINT null_Tournament_name NOT NULL,
     --CHECK AGAIN
-    winner INTEGER REFERENCES Player ON ON DELETE CASCADE ON UPDATE CASCADE,
+    winner INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
     --------------------------------
-    id_website INTEGER REFERENCES WebsiteON ON DELETE CASCADE ON UPDATE CASCADE
+    id_website INTEGER REFERENCES Website ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: Match
@@ -72,7 +72,7 @@ DROP TABLE IF EXISTS Match;
 CREATE TABLE Match (
     id_match INTEGER PRIMARY KEY,
     --CHECK AGAIN
-    result INTEGER REFERENCES Player ON ON DELETE CASCADE ON UPDATE CASCADE,
+    result INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
     --------------------------------
     details TEXT,
     date DATE CONSTRAINT null_Match_date NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE Match (
     duration_black TIME CONSTRAINT null_Match_durationBlack NOT NULL CONSTRAINT zero_Match_durationBlack CHECK(duration_black >= 0),
     increment INTEGER CONSTRAINT null_Match_increment NOT NULL CONSTRAINT zero_Match_increment CHECK(increment >= 0),
     number_of_moves INTEGER CONSTRAINT null_Match_numberOfMoves NOT NULL CONSTRAINT zero_Match_numberOfMoves CHECK(number_of_moves >= 0),
-    id_tournament INTEGER REFERENCES Tournament ON ON DELETE CASCADE ON UPDATE CASCADE,
+    id_tournament INTEGER REFERENCES Tournament ON DELETE CASCADE ON UPDATE CASCADE,
     id_website INTEGER REFERENCES WebsiteON ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -206,8 +206,8 @@ CREATE TABLE MatchChessClub (
 DROP TABLE IF EXISTS TournamentChessClub;
 
 CREATE TABLE TournamentChessClub (
-    id_tournament INTEGER REFERENCES TournamentON DELETE CASCADE ON UPDATE CASCADE,
-    id_club INTEGER REFERENCES ChessClubON DELETE CASCADE ON UPDATE CASCADE,
+    id_tournament INTEGER REFERENCES Tournament ON DELETE CASCADE ON UPDATE CASCADE,
+    id_club INTEGER REFERENCES ChessClub ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY(id_tournament, id_club)
 );
 
