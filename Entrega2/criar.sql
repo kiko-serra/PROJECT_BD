@@ -89,10 +89,10 @@ DROP TABLE IF EXISTS Sponsor;
 
 CREATE TABLE Sponsor (
     id_sponsor INTEGER PRIMARY KEY,
-    name TEXT CONSTRAINT null_Sponsor_name NOT NULL,
+    name TEXT CONSTRAINT null_Sponsor_name NOT NULL CONSTRAINT unique_Sponsor_name UNIQUE,
     phone_number INTEGER CONSTRAINT null_Sponsor_phone_number NOT NULL CONSTRAINT unique_Sponsor_phone_number UNIQUE,
     email TEXT CONSTRAINT null_Sponsor_email NOT NULL CONSTRAINT unique_Sponsor_email UNIQUE,
-    adress TEXT CONSTRAINT unique_Sponsor_adress UNIQUE
+    address TEXT CONSTRAINT null_Sponsor_address NOT NULL CONSTRAINT unique_Sponsor_adress UNIQUE
 );
 
 -- Table: PlayerMatch
