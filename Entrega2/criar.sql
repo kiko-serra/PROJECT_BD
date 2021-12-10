@@ -60,9 +60,6 @@ CREATE TABLE Tournament (
     start_date DATE CONSTRAINT null_Tournament_startDate NOT NULL,
     end_date DATE CONSTRAINT null_Tournament_endDate NOT NULL,
     name TEXT CONSTRAINT null_Tournament_name NOT NULL,
-    --CHECK AGAIN
-    winner INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
-    --------------------------------
     id_website INTEGER REFERENCES Website ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -71,15 +68,38 @@ DROP TABLE IF EXISTS Match;
 
 CREATE TABLE Match (
     id_match INTEGER PRIMARY KEY,
-    --CHECK AGAIN
-    result INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
-    --------------------------------
     details TEXT,
     date DATE CONSTRAINT null_Match_date NOT NULL,
     duration_white TIME CONSTRAINT null_Match_durationWhite NOT NULL CONSTRAINT zero_Match_durationWhite CHECK(duration_white >= 0),
     duration_black TIME CONSTRAINT null_Match_durationBlack NOT NULL CONSTRAINT zero_Match_durationBlack CHECK(duration_black >= 0),
     increment INTEGER CONSTRAINT null_Match_increment NOT NULL CONSTRAINT zero_Match_increment CHECK(increment >= 0),
     number_of_moves INTEGER CONSTRAINT null_Match_numberOfMoves NOT NULL CONSTRAINT zero_Match_numberOfMoves CHECK(number_of_moves >= 0),
+    type TEXT CONSTRAINT null_Match_type NOT NULL CONSTRAINT check_Match_type CHECK (
+        (
+            type = "CLASSIC"
+            AND duration_white >= '1:00:00'
+            AND duration_black >= '1:00:00'
+        )
+        OR (
+            type = "RAPID"
+            AND duration_white >= '0:10:00'
+            AND duration_black >= '0:10:00'
+            AND duration_white < '1:00:00'
+            AND duration_black < '1:00:00'
+        )
+        OR (
+            type = "BLITZ"
+            AND duration_white >= '0:03:00'
+            AND duration_black >= '0:03:00'
+            AND duration_white < '0:10:00'
+            AND duration_black < '0:10:00'
+        )
+        OR (
+            type = "BULLET"
+            AND duration_white < '0:03:00'
+            AND duration_black < '0:03:00'
+        )
+    ),
     id_tournament INTEGER REFERENCES Tournament ON DELETE CASCADE ON UPDATE CASCADE,
     id_website INTEGER REFERENCES Website ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -101,6 +121,7 @@ DROP TABLE IF EXISTS PlayerMatch;
 CREATE TABLE PlayerMatch (
     id_player INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
     id_match INTEGER REFERENCES Match ON DELETE CASCADE ON UPDATE CASCADE,
+    winner BOOLEAN CONSTRAINT null_PlayerMatch_winner NOT NULL CONSTRAINT check_PlayerMatch_winner CHECK (winner IN (0, 1)),
     PRIMARY KEY(id_player, id_match)
 );
 
@@ -110,6 +131,7 @@ DROP TABLE IF EXISTS PlayerTournament;
 CREATE TABLE PlayerTournament (
     id_player INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
     id_tournament INTEGER REFERENCES Tournament ON DELETE CASCADE ON UPDATE CASCADE,
+    winner BOOLEAN CONSTRAINT null_PlayerTournament_winner NOT NULL CONSTRAINT check_PlayerTournament_winner CHECK (winner IN (0, 1)),
     PRIMARY KEY(id_player, id_tournament)
 );
 
@@ -132,24 +154,6 @@ CREATE TABLE MemberId (
     id_player INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
     member_id INTEGER CONSTRAINT null_MemberId_member_id NOT NULL,
     PRIMARY KEY (id_club, id_player)
-);
-
--- Table: PlayerSponsor
-DROP TABLE IF EXISTS PlayerSponsor;
-
-CREATE TABLE PlayerSponsor (
-    id_player INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
-    id_sponsor INTEGER REFERENCES Sponsor ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY(id_player, id_sponsor)
-);
-
--- Table: TournamentSponsor
-DROP TABLE IF EXISTS TournamentSponsor;
-
-CREATE TABLE TournamentSponsor (
-    id_tournament INTEGER REFERENCES Tournament ON DELETE CASCADE ON UPDATE CASCADE,
-    id_sponsor INTEGER REFERENCES Sponsor ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY(id_tournament, id_sponsor)
 );
 
 -- Table: LevelOfSponsorPlayer
