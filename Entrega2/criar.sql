@@ -9,7 +9,7 @@ CREATE TABLE Player (
     id_player INTEGER PRIMARY KEY,
     first_name TEXT CONSTRAINT null_Player_firstName NOT NULL,
     last_name TEXT CONSTRAINT null_Player_lastName NOT NULL,
-    adress TEXT CONSTRAINT unique_Player_adress UNIQUE,
+    adress TEXT CONSTRAINT,
     phone_number TEXT CONSTRAINT unique_Player_phoneNumber UNIQUE,
     birthday DATE CONSTRAINT null_Player_birthday NOT NULL
 );
@@ -18,7 +18,8 @@ CREATE TABLE Player (
 DROP TABLE IF EXISTS FideRanking;
 
 CREATE TABLE FideRanking (
-    id_player INTEGER PRIMARY KEY REFERENCES Player ON DELETE NO ACTION ON UPDATE CASCADE,
+    id_fide INTEGER PRIMARY KEY,
+    id_player INTEGER REFERENCES Player ON DELETE SET NULL ON UPDATE CASCADE,
     category TEXT CONSTRAINT null_FideRanking_category NOT NULL CONSTRAINT check_FideRanking_category CHECK (
         (
             category = "MEN"

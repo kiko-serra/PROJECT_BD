@@ -354,28 +354,28 @@ int main()
         aux = rand() % 3000;
         if (aux > 2400)
         {
-            fprintf(dest, "INSERT INTO FideRanking VALUES (%d,\"%s\",\"%s\",%d);\n",
-                    players[i], buff, "Grandmaster (GM)", aux);
+            fprintf(dest, "INSERT INTO FideRanking VALUES (%d,%d,\"%s\",\"%s\",%d);\n",
+                    players[i], players[i], buff, "Grandmaster (GM)", aux);
         }
         else if (aux > 2300)
         {
-            fprintf(dest, "INSERT INTO FideRanking VALUES (%d,\"%s\",\"%s\",%d);\n",
-                    players[i], buff, "International Master (IM)", aux);
+            fprintf(dest, "INSERT INTO FideRanking VALUES (%d,%d,\"%s\",\"%s\",%d);\n",
+                    players[i], players[i], buff, "International Master (IM)", aux);
         }
         else if (aux > 2200)
         {
-            fprintf(dest, "INSERT INTO FideRanking VALUES (%d,\"%s\",\"%s\",%d);\n",
-                    players[i], buff, "FIDE Master (FM)", aux);
+            fprintf(dest, "INSERT INTO FideRanking VALUES (%d,%d,\"%s\",\"%s\",%d);\n",
+                    players[i], players[i], buff, "FIDE Master (FM)", aux);
         }
         else if (aux > 2000)
         {
-            fprintf(dest, "INSERT INTO FideRanking VALUES (%d,\"%s\",\"%s\",%d);\n",
-                    players[i], buff, "Candidate Master (CM)", aux);
+            fprintf(dest, "INSERT INTO FideRanking VALUES (%d,%d,\"%s\",\"%s\",%d);\n",
+                    players[i], players[i], buff, "Candidate Master (CM)", aux);
         }
         else
         {
-            fprintf(dest, "INSERT INTO FideRanking VALUES (%d,\"%s\",%s,%d);\n",
-                    players[i], buff, "NULL", aux);
+            fprintf(dest, "INSERT INTO FideRanking VALUES (%d,%d,\"%s\",%s,%d);\n",
+                    players[i], players[i], buff, "NULL", aux);
         }
     }
 
