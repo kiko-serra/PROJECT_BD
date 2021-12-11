@@ -9,7 +9,7 @@ CREATE TABLE Player (
     id_player INTEGER PRIMARY KEY,
     first_name TEXT CONSTRAINT null_Player_firstName NOT NULL,
     last_name TEXT CONSTRAINT null_Player_lastName NOT NULL,
-    adress TEXT CONSTRAINT,
+    adress TEXT,
     phone_number TEXT CONSTRAINT unique_Player_phoneNumber UNIQUE,
     birthday DATE CONSTRAINT null_Player_birthday NOT NULL
 );
