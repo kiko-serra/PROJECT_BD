@@ -18,7 +18,7 @@ CREATE TABLE Player (
 DROP TABLE IF EXISTS FideRanking;
 
 CREATE TABLE FideRanking (
-    id_player INTEGER PRIMARY KEY REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
+    id_player INTEGER PRIMARY KEY REFERENCES Player ON DELETE NO ACTION ON UPDATE CASCADE,
     category TEXT CONSTRAINT null_FideRanking_category NOT NULL CONSTRAINT check_FideRanking_category CHECK (
         (
             category = "MEN"
