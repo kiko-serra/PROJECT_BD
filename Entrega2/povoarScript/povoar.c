@@ -751,6 +751,50 @@ int main()
             aux2, club[MAX_CLUBS - 1]);
 
     // TABELA LEVEL_OF_SPONSOR_PLAYER
+    aux2 = 0;
+    aux3 = 0;
+    for (int i = 0; i < MAX_SPONSORS; i++)
+    {
+        aux = rand() % 3;
+        switch (aux)
+        {
+        case 0:
+            playerSponsor[i] = 1;
+            break;
+        case 1:
+            aux2++;
+            playerSponsor[i] = 1;
+            if (aux2 >= MAX_PLAYERS)
+            {
+                aux3 = 1;
+                break;
+            }
+            playerSponsor[i] = 2;
+            break;
+        case 2:
+            aux2++;
+            playerSponsor[i] = 1;
+            if (aux2 >= MAX_PLAYERS)
+            {
+                aux3 = 1;
+                break;
+            }
+            aux2++;
+            playerSponsor[i] = 2;
+            if (aux2 >= MAX_PLAYERS)
+            {
+                aux3 = 1;
+                break;
+            }
+            playerSponsor[i] = 3;
+            break;
+        }
+        if (aux3 == 1)
+        {
+            break;
+        }
+    }
+
     fprintf(dest, "\n\n\n------------------------------------------------------TABLE LEVEL_OF_SPONSOR_PLAYER-------------------------------------------------------\n\n");
     aux2 = 0;
     for (int i = 0; i < MAX_SPONSORS; i++)
@@ -782,6 +826,50 @@ int main()
     }
 
     // TABELA LEVEL_OF_SPONSOR_TOURNAMENT
+    aux2 = 0;
+    aux3 = 0;
+    for (int i = 0; i < MAX_SPONSORS; i++)
+    {
+        aux = rand() % 3;
+        switch (aux)
+        {
+        case 0:
+            tournamentSponsor[i] = 1;
+            break;
+        case 1:
+            aux2++;
+            tournamentSponsor[i] = 1;
+            if (aux2 >= MAX_TOURNAMENTS)
+            {
+                aux3 = 1;
+                break;
+            }
+            tournamentSponsor[i] = 2;
+            break;
+        case 2:
+            aux2++;
+            tournamentSponsor[i] = 1;
+            if (aux2 >= MAX_TOURNAMENTS)
+            {
+                aux3 = 1;
+                break;
+            }
+            aux2++;
+            tournamentSponsor[i] = 2;
+            if (aux2 >= MAX_TOURNAMENTS)
+            {
+                aux3 = 1;
+                break;
+            }
+            tournamentSponsor[i] = 3;
+            break;
+        }
+        if (aux3 == 1)
+        {
+            break;
+        }
+    }
+
     fprintf(dest, "\n\n\n------------------------------------------------------TABLE LEVEL_OF_SPONSOR_TOURNAMENT-------------------------------------------------------\n\n");
     aux2 = 0;
     for (int i = 0; i < MAX_SPONSORS; i++)
