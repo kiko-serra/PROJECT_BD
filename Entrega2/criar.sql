@@ -1,9 +1,28 @@
 PRAGMA foreign_keys = on;
-
+-- Temos que fazer drop table na ordem inversa dos create table, primeiro drop TournamentChessClub e so no fim drop player.
+-- E os drops tem que estar todos seguidos no inicio
 BEGIN TRANSACTION;
 
--- Table: Player
+DROP TABLE IF EXISTS TournamentChessClub;
+DROP TABLE IF EXISTS MatchChessClub;
+DROP TABLE IF EXISTS PlayerAccount;
+DROP TABLE IF EXISTS LevelOfSponsorTournament;
+DROP TABLE IF EXISTS LevelOfSponsorPlayer;
+DROP TABLE IF EXISTS MemberId;
+DROP TABLE IF EXISTS ChessClub;
+DROP TABLE IF EXISTS PlayerTournament;
+DROP TABLE IF EXISTS PlayerMatch;
+DROP TABLE IF EXISTS Sponsor;
+DROP TABLE IF EXISTS Match;
+DROP TABLE IF EXISTS Tournament;
+DROP TABLE IF EXISTS Account;
+DROP TABLE IF EXISTS Website;
+DROP TABLE IF EXISTS FideRanking;
 DROP TABLE IF EXISTS Player;
+
+
+-- Table: Player
+
 
 CREATE TABLE Player (
     id_player INTEGER PRIMARY KEY,
@@ -15,7 +34,7 @@ CREATE TABLE Player (
 );
 
 -- Table: FideRanking
-DROP TABLE IF EXISTS FideRanking;
+
 
 CREATE TABLE FideRanking (
     id_fide INTEGER PRIMARY KEY,
@@ -33,7 +52,7 @@ CREATE TABLE FideRanking (
 );
 
 -- Table: Website
-DROP TABLE IF EXISTS Website;
+
 
 CREATE TABLE Website (
     id_website INTEGER PRIMARY KEY,
@@ -42,7 +61,7 @@ CREATE TABLE Website (
 );
 
 -- Table: Account
-DROP TABLE IF EXISTS Account;
+
 
 CREATE TABLE Account (
     id_account INTEGER PRIMARY KEY,
@@ -54,7 +73,7 @@ CREATE TABLE Account (
 );
 
 -- Table: Tournament
-DROP TABLE IF EXISTS Tournament;
+
 
 CREATE TABLE Tournament (
     id_tournament INTEGER PRIMARY KEY,
@@ -65,7 +84,7 @@ CREATE TABLE Tournament (
 );
 
 -- Table: Match
-DROP TABLE IF EXISTS Match;
+
 
 CREATE TABLE Match (
     id_match INTEGER PRIMARY KEY,
@@ -106,7 +125,7 @@ CREATE TABLE Match (
 );
 
 -- Table: Sponsor
-DROP TABLE IF EXISTS Sponsor;
+
 
 CREATE TABLE Sponsor (
     id_sponsor INTEGER PRIMARY KEY,
@@ -117,7 +136,7 @@ CREATE TABLE Sponsor (
 );
 
 -- Table: PlayerMatch
-DROP TABLE IF EXISTS PlayerMatch;
+
 
 CREATE TABLE PlayerMatch (
     id_player INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
@@ -127,7 +146,7 @@ CREATE TABLE PlayerMatch (
 );
 
 -- Table: PlayerTournament
-DROP TABLE IF EXISTS PlayerTournament;
+
 
 CREATE TABLE PlayerTournament (
     id_player INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
@@ -137,7 +156,7 @@ CREATE TABLE PlayerTournament (
 );
 
 -- Table: ChessClub
-DROP TABLE IF EXISTS ChessClub;
+
 
 CREATE TABLE ChessClub (
     id_club INTEGER PRIMARY KEY,
@@ -148,7 +167,7 @@ CREATE TABLE ChessClub (
 );
 
 -- Table: MemberId
-DROP TABLE IF EXISTS MemberId;
+
 
 CREATE TABLE MemberId (
     id_club INTEGER REFERENCES ChessClub ON DELETE CASCADE ON UPDATE CASCADE,
@@ -158,7 +177,7 @@ CREATE TABLE MemberId (
 );
 
 -- Table: LevelOfSponsorPlayer
-DROP TABLE IF EXISTS LevelOfSponsorPlayer;
+
 
 CREATE TABLE LevelOfSponsorPlayer (
     id_player INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
@@ -174,7 +193,7 @@ CREATE TABLE LevelOfSponsorPlayer (
 );
 
 -- Table: LevelOfSponsorTournament
-DROP TABLE IF EXISTS LevelOfSponsorTournament;
+
 
 CREATE TABLE LevelOfSponsorTournament (
     id_tournament INTEGER REFERENCES Tournament ON DELETE CASCADE ON UPDATE CASCADE,
@@ -190,7 +209,7 @@ CREATE TABLE LevelOfSponsorTournament (
 );
 
 -- Table: PlayerAccount
-DROP TABLE IF EXISTS PlayerAccount;
+
 
 CREATE TABLE PlayerAccount (
     id_player INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
@@ -199,7 +218,7 @@ CREATE TABLE PlayerAccount (
 );
 
 -- Table: MatchChessClub
-DROP TABLE IF EXISTS MatchChessClub;
+
 
 CREATE TABLE MatchChessClub (
     id_match INTEGER REFERENCES Match ON DELETE CASCADE ON UPDATE CASCADE,
@@ -208,7 +227,7 @@ CREATE TABLE MatchChessClub (
 );
 
 -- Table: TournamentChessClub
-DROP TABLE IF EXISTS TournamentChessClub;
+
 
 CREATE TABLE TournamentChessClub (
     id_tournament INTEGER REFERENCES Tournament ON DELETE CASCADE ON UPDATE CASCADE,
