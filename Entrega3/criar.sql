@@ -69,7 +69,8 @@ CREATE TABLE Account (
     email TEXT CONSTRAINT unique_Account_email UNIQUE CONSTRAINT null_Account_email NOT NULL,
     title TEXT,
     number_of_points INTEGER CONSTRAINT zero_Account_numberOfPoints CHECK(number_of_points >= 0),
-    id_website INTEGER REFERENCES Website ON DELETE CASCADE ON UPDATE CASCADE
+    id_website INTEGER REFERENCES Website CONSTRAINT null_Account_id_website NOT NULL ON DELETE CASCADE ON UPDATE CASCADE,
+    id_player INTEGER REFERENCES Player CONSTRAINT null_Account_id_player NOT NULL ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Table: Tournament
@@ -139,7 +140,7 @@ CREATE TABLE Sponsor (
 
 
 CREATE TABLE PlayerMatch (
-    id_player INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
+    id_player INTEGER REFERENCES Player CONSTRAINT null_PlayerMatch_id_player NOT NULL ON DELETE CASCADE ON UPDATE CASCADE,
     id_match INTEGER REFERENCES Match ON DELETE CASCADE ON UPDATE CASCADE,
     winner BOOLEAN CONSTRAINT null_PlayerMatch_winner NOT NULL CONSTRAINT check_PlayerMatch_winner CHECK (winner IN (0, 1)),
     PRIMARY KEY(id_player, id_match)
