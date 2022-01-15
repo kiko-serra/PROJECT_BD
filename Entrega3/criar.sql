@@ -93,7 +93,7 @@ CREATE TABLE Match (
     date DATE CONSTRAINT null_Match_date NOT NULL,
     duration_white TIME CONSTRAINT null_Match_durationWhite NOT NULL CONSTRAINT zero_Match_durationWhite CHECK(duration_white >= 0),
     duration_black TIME CONSTRAINT null_Match_durationBlack NOT NULL CONSTRAINT zero_Match_durationBlack CHECK(duration_black >= 0),
-    increment INTEGER CONSTRAINT null_Match_increment NOT NULL CONSTRAINT zero_Match_increment CHECK(increment >= 0),
+    increment INTEGER CONSTRAINT default_Match_increment DEFAULT 0 CONSTRAINT null_Match_increment NOT NULL CONSTRAINT zero_Match_increment CHECK(increment >= 0),
     number_of_moves INTEGER CONSTRAINT null_Match_numberOfMoves NOT NULL CONSTRAINT zero_Match_numberOfMoves CHECK(number_of_moves >= 0),
     type TEXT CONSTRAINT null_Match_type NOT NULL CONSTRAINT check_Match_type CHECK (
         (
