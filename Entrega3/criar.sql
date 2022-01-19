@@ -28,7 +28,7 @@ CREATE TABLE Player (
     id_player INTEGER PRIMARY KEY,
     first_name TEXT CONSTRAINT null_Player_firstName NOT NULL,
     last_name TEXT CONSTRAINT null_Player_lastName NOT NULL,
-    adress TEXT,
+    address TEXT,
     phone_number TEXT CONSTRAINT unique_Player_phoneNumber UNIQUE,
     birthday DATE CONSTRAINT null_Player_birthday NOT NULL
 );
@@ -162,8 +162,8 @@ CREATE TABLE PlayerTournament (
 CREATE TABLE ChessClub (
     id_club INTEGER PRIMARY KEY,
     name TEXT CONSTRAINT null_ChessClub_name NOT NULL CONSTRAINT unique_ChessClub_name UNIQUE,
+    address TEXT CONSTRAINT null_ChessClub_adress NOT NULL CONSTRAINT unique_ChessClub_adress UNIQUE,
     ranking INTEGER CONSTRAINT null_ChessClub_ranking NOT NULL CONSTRAINT zero_ChessClub_ranking CHECK (ranking >= 0),
-    adress TEXT CONSTRAINT null_ChessClub_adress NOT NULL CONSTRAINT unique_ChessClub_adress UNIQUE,
     number_of_members INTEGER CONSTRAINT zero_ChessClub_number_of_members CHECK (number_of_members >= 3)
 );
 
