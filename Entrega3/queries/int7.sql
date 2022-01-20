@@ -2,6 +2,9 @@
 .headers on
 .nullvalue NULL
 
+--List of all the players that played in any tournament but did not win it.
+--View of all the players that played in any tournament
+
 CREATE VIEW if not EXISTS playersInTournaments as
     SELECT first_name, last_name, winner
     FROM Player inner join PlayerTournament

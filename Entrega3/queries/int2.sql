@@ -2,7 +2,7 @@
 .headers on
 .nullvalue NULL
 
--- Listagem de número de partidas de cada player
+--List of the number of matches played by each player
 
 SELECT id_player, first_name, last_name, count(*) AS numeroDePartidas 
 FROM Player natural join PlayerMatch
