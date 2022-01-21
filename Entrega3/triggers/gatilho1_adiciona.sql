@@ -5,3 +5,5 @@
 PRAGMA foreign_keys = ON;
 
 --first .read criar.sql second .read triggers and last .read povoar.sql
+
+--atuaizar o titulo do player depois de um match
