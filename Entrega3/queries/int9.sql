@@ -3,7 +3,7 @@
 .nullvalue NULL
 
 --nickname da account do player com mais elo points 
--- autoria: Francisco o deus e nao o um 
+
 CREATE VIEW if not EXISTS accountName as
     SELECT Player.id_player, Account.nickname
     FROM Player inner join Account
@@ -15,7 +15,7 @@ CREATE VIEW if not EXISTS maxElo as
     FROM Player inner join FideRanking
     ON Player.id_player = FideRanking.id_player;
 
-SELECT maxElo.id_player as Player_ID, MAX(maxElo.number) as GreatestPlayer, accountName.nickname as NickName
+SELECT maxElo.id_player as Player_ID, MAX(maxElo.number) as NumberOfPoints, accountName.nickname as NickName
 FROM maxElo inner join accountName
 ON maxElo.id_player = accountName.id_player;
 
