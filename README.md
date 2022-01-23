@@ -1,3 +1,3 @@
 # Projeto de Bases de Dados
 
-## Mudar a int 3 4 e 10
+## Mudar a int 4
