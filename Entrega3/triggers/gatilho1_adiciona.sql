@@ -6,12 +6,12 @@ PRAGMA foreign_keys = ON;
 
 --first .read criar.sql second .read triggers and last .read povoar.sql
 
-CREATE TRIGGER validateEmail
-   BEFORE INSERT ON Account
+CREATE TRIGGER phone_numberValid
+   BEFORE INSERT ON Player
 BEGIN
    SELECT
       CASE
-	WHEN NEW.email NOT LIKE '%_@__%.__%' THEN
-   	  RAISE (ABORT,'Invalid email address')
+	WHEN NEW.phone_number NOT LIKE '(___) ___-____' THEN
+   	  RAISE (ABORT,'Invalid phone number ')
        END;
 END;
