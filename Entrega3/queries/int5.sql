@@ -2,7 +2,7 @@
 .headers on
 .nullvalue NULL
 
--- List of all players that have not play any game yet.
+-- List of all players that have not played any game yet.
 
 SELECT first_name, last_name 
 FROM Player
