@@ -2,7 +2,7 @@
 .headers on
 .nullvalue NULL
 
---nickname da account do player com mais elo points 
+--Nickname of the account from the Player with the most elo points 
 
 CREATE VIEW IF NOT EXISTS accountName AS
     SELECT Player.id_player, Account.nickname

@@ -3,7 +3,6 @@
 .nullvalue NULL
 
 --List of all the players that played in any tournament but did not win it.
---View of all the players that played in any tournament
 
 CREATE VIEW IF NOT EXISTS playersInTournaments AS
     SELECT first_name, last_name, winner
