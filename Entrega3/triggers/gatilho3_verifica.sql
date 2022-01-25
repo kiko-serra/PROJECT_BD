@@ -3,6 +3,7 @@
 .nullvalue NULL
 
 PRAGMA foreign_keys = ON;
+
 Select * from FideRanking;
 
 INSERT INTO Player VALUES (48474,"Dana","Phillips","578 Quai de Nesle","(452) 261-4753",'1983-12-13');

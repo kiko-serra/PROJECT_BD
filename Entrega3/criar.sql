@@ -1,6 +1,5 @@
 PRAGMA foreign_keys = on;
--- Temos que fazer drop table na ordem inversa dos create table, primeiro drop TournamentChessClub e so no fim drop player.
--- E os drops tem que estar todos seguidos no inicio
+
 BEGIN TRANSACTION;
 
 DROP TABLE IF EXISTS TournamentChessClub;

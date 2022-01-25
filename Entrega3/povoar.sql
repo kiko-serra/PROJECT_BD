@@ -949,7 +949,7 @@ INSERT INTO Player VALUES (27676,"Heather","Kent","7770 Impasse des Lombards, Ap
 INSERT INTO Player VALUES (98365,"Rachelle","Woods","767 Avenue d'Assas, Apt. 092, 01196, Colmar, Alsace, France","(262) 788-3381",'1987-08-01');
 INSERT INTO Player VALUES (83321,"Tatiana","McDonald","968 Allée Lepic, Apt. 156, 35387, Vitry-sur-Seine, Languedoc-Roussillon, France","(986) 221-2083",'1961-08-13');
 INSERT INTO Player VALUES (46746,"Shawn","Stevens","287 Passage du Dahomey, Apt. 689, 34137, Saint-Pierre, Centre, France","(540) 382-2384",'1968-01-12');
-INSERT INTO Player VALUES (89164,"Veronica","Bates","578 Quai de Nesle, Apt. 109, 92646, Le Mans, Bretagne, France","(452) 261-4753",'1980-12-24');
+INSERT INTO Player VALUES (89164,"Veronica","Bates","578 Quai de Nesle, Apt. 109, 92646, Le Mans, Bretagne, France","(452) 561-4753",'1980-12-24');
 INSERT INTO Player VALUES (17398,"Carl","Bell","656 Quai Saint-Denis, 9 étage, 65486, Ivry-sur-Seine, Lorraine, France","(607) 328-6552",'1990-11-18');
 INSERT INTO Player VALUES (73988,"Belinda","Benson","734 Impasse Oberkampf, Apt. 231, 27541, Montpellier, Lorraine, France","(387) 574-3213",'1971-02-18');
 INSERT INTO Player VALUES (64370,"Jennifer","Dougherty","830 Boulevard des Rosiers, Apt. 126, 35388, Fort-de-France, Champagne-Ardenne, France","(925) 614-0778",'1965-06-17');
