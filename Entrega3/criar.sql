@@ -1,5 +1,6 @@
 PRAGMA foreign_keys = on;
-
+-- Temos que fazer drop table na ordem inversa dos create table, primeiro drop TournamentChessClub e so no fim drop player.
+-- E os drops tem que estar todos seguidos no inicio
 BEGIN TRANSACTION;
 
 DROP TABLE IF EXISTS TournamentChessClub;
@@ -163,7 +164,7 @@ CREATE TABLE ChessClub (
     name TEXT CONSTRAINT null_ChessClub_name NOT NULL CONSTRAINT unique_ChessClub_name UNIQUE,
     address TEXT CONSTRAINT null_ChessClub_adress NOT NULL CONSTRAINT unique_ChessClub_adress UNIQUE,
     ranking INTEGER CONSTRAINT null_ChessClub_ranking NOT NULL CONSTRAINT zero_ChessClub_ranking CHECK (ranking >= 0),
-    number_of_members INTEGER CONSTRAINT zero_ChessClub_number_of_members CHECK (number_of_members >= 3)
+    number_of_members INTEGER CONSTRAINT default_ChessClub_numberOfMembers DEFAULT 0
 );
 
 -- Table: MemberId
