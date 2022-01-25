@@ -2,7 +2,7 @@
 .headers on
 .nullvalue NULL
 
--- Mostra o clube com o pior ranking.
+-- Club with the worst ranking
 
-SELECT MIN(ranking) as PointsWorstClub, name as ClubName
+SELECT MIN(ranking) AS PointsWorstClub, name AS ClubName
 FROM ChessClub;
