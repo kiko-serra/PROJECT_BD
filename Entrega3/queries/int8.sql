@@ -7,7 +7,7 @@
 SELECT id_account, number_of_points, id_website
 FROM Account
 WHERE id_website IN (SELECT Website.id_website 
-                    from Website, Match 
-                    where Website.id_website = Match.id_website) 
-                    Order by number_of_points desc limit 3;
+                    FROM Website, Match 
+                    WHERE Website.id_website = Match.id_website) 
+                    ORDER BY number_of_points DESC LIMIT 3;
  
