@@ -4,7 +4,7 @@
 
 PRAGMA foreign_keys = ON;
 
---first .read criar.sql second .read triggers and last .read povoar.sql
+--Checks if a phone number is valid. Prints an error if its invalid.
 
 CREATE TRIGGER phone_numberValid
    BEFORE INSERT ON Player
