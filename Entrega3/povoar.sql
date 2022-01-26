@@ -1002,7 +1002,7 @@ INSERT INTO Player VALUES (92103,"Courtney","Desai","215 Avenue Mouffetard, 2 é
 INSERT INTO Player VALUES (36735,"Donald","Wall","0 Impasse Monsieur-le-Prince, Apt. 534, 86448, Courbevoie, Provence-Alpes-Côte d'Azur, France","(751) 535-2143",'1985-05-16');
 INSERT INTO Player VALUES (20855,"Ariana","Wise","361 Quai Adolphe Mille, 8 étage, 49220, Nîmes, Nord-Pas-de-Calais, France","(451) 979-0606",'1994-06-02');
 INSERT INTO Player VALUES (33738,"Karen","Duke","9351 Boulevard de la Chaussée-d'Antin, Apt. 389, 74146, Bordeaux, Haute-Normandie, France","(229) 267-0326",'1996-04-07');
-INSERT INTO Player VALUES (40276,"India","Stern","4 Place de Tilsitt, 9 étage, 52532, Fort-de-France, Bretagne, Franc","(254) 679-166",'1969-06-09');
+INSERT INTO Player VALUES (40276,"India","Stern","4 Place de Tilsitt, 9 étage, 52532, Fort-de-France, Bretagne, Franc","(254) 679-1665",'1969-06-09');
 
 
 

@@ -5,10 +5,10 @@
 PRAGMA foreign_keys = ON;
 
 .print ''
-.print 'Initial state for Players:'
+.print 'Initial state:'
 .print ''
 
-Select * from player;
+SELECT * FROM player WHERE id_player = 10000000;
 
 .print ''
 .print 'Trying to insert Player with phone number valid...'
@@ -20,7 +20,7 @@ INSERT INTO Player VALUES (10000000,"dc","Hewey","4280 Impasse de l'Odéon, Apt.
 .print 'Inserted with sucess:'
 .print ''
 
-Select * from player;
+SELECT * FROM player WHERE id_player = 10000000;
 
 .print ''
 .print 'Trying to insert Player with phone number invalid...'
@@ -32,4 +32,5 @@ INSERT INTO Player VALUES (10000001,"Ole","Hey","4280 Impasse de l'Odéon, Apt. 
 .print 'Not inserted due to trigger (as showned below):'
 .print ''
 
-Select * from player;
+SELECT * FROM player WHERE id_player = 10000000;
+SELECT * FROM player WHERE id_player = 10000001;
