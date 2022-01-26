@@ -209,15 +209,6 @@ CREATE TABLE LevelOfSponsorTournament (
     PRIMARY KEY (id_tournament, id_sponsor)
 );
 
--- Table: PlayerAccount
-
-
-CREATE TABLE PlayerAccount (
-    id_player INTEGER REFERENCES Player ON DELETE CASCADE ON UPDATE CASCADE,
-    id_account INTEGER REFERENCES Account ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY(id_player, id_account)
-);
-
 -- Table: MatchChessClub
 
 

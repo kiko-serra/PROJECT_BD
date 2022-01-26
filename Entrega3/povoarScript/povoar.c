@@ -695,20 +695,13 @@ int main()
         buff2[strlen(buff2) - 1] = '\0';
         fprintf(dest, "INSERT INTO ChessClub VALUES (%d,\"%s\",\"%s\",%d,%d);\n",
                 uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS + MAX_MATCHS + MAX_SPONSORS],
-                buff, buff2, rand() % 3000, 3);
+                buff, buff2, rand() % 3000, 0);
         club[i] = uniqueId[i + MAX_PLAYERS + MAX_WEBSITES + MAX_ACCOUNTS + MAX_TOURNAMENTS + MAX_MATCHS + MAX_SPONSORS];
     }
 
     // TABELA MEMBER_ID
     fprintf(dest, "\n\n\n------------------------------------------------------TABLE MEMBER_ID-------------------------------------------------------\n\n");
     aux = 0;
-    aux2 = 0;
-    int numOfMembers[MAX_CLUBS];
-    for (int i = 0; i < MAX_CLUBS - 1; i++)
-    {
-        numOfMembers[i] = rand() % 30 + 3;
-    }
-    numOfMembers[MAX_CLUBS - 1] = MAX_PLAYERS;
     for (int i = 0; i < MAX_PLAYERS; i++)
     {
         fprintf(dest, "INSERT INTO MemberId VALUES (%d,%d,%d);\n",
@@ -737,18 +730,7 @@ int main()
                 }
             }
         }
-        if (numOfMembers[aux] <= aux2)
-        {
-            fprintf(dest, "UPDATE ChessClub SET number_of_members = %d WHERE id_club = %d;\n",
-                    numOfMembers[aux], club[aux]);
-            aux2 = 0;
-            aux++;
-        }
-        aux2++;
     }
-    aux2--;
-    fprintf(dest, "UPDATE ChessClub SET number_of_members = %d WHERE id_club = %d;\n",
-            aux2, club[MAX_CLUBS - 1]);
 
     // TABELA LEVEL_OF_SPONSOR_PLAYER
     aux2 = 0;
@@ -896,58 +878,6 @@ int main()
             aux2++;
             fprintf(dest, "INSERT INTO LevelOfSponsorTournament VALUES (%d,%d,\"%s\");\n",
                     tournaments[aux2], sponsor[i], levelOfSponsor());
-            break;
-        }
-    }
-
-    // TABELA PLAYER_ACCOUNT
-    fprintf(dest, "\n\n\n------------------------------------------------------TABLE PLAYER_ACCOUNT-------------------------------------------------------\n\n");
-    aux2 = 0;
-    aux3 = 0;
-    for (int i = 0; i < MAX_PLAYERS; i++)
-    {
-        aux = rand() % 3;
-        switch (aux)
-        {
-        case 0:
-            fprintf(dest, "INSERT INTO PlayerAccount VALUES (%d,%d);\n",
-                    players[i], accounts[aux2]);
-            break;
-        case 1:
-            fprintf(dest, "INSERT INTO PlayerAccount VALUES (%d,%d);\n",
-                    players[i], accounts[aux2]);
-            aux2++;
-            if (aux2 >= MAX_ACCOUNTS)
-            {
-                aux3 = 1;
-                break;
-            }
-            fprintf(dest, "INSERT INTO PlayerAccount VALUES (%d,%d);\n",
-                    players[i], accounts[aux2]);
-            break;
-        case 2:
-            fprintf(dest, "INSERT INTO PlayerAccount VALUES (%d,%d);\n",
-                    players[i], accounts[aux2]);
-            aux2++;
-            if (aux2 >= MAX_ACCOUNTS)
-            {
-                aux3 = 1;
-                break;
-            }
-            fprintf(dest, "INSERT INTO PlayerAccount VALUES (%d,%d);\n",
-                    players[i], accounts[aux2]);
-            aux2++;
-            if (aux2 >= MAX_ACCOUNTS)
-            {
-                aux3 = 1;
-                break;
-            }
-            fprintf(dest, "INSERT INTO PlayerAccount VALUES (%d,%d);\n",
-                    players[i], accounts[aux2]);
-            break;
-        }
-        if (aux3 == 1)
-        {
             break;
         }
     }
