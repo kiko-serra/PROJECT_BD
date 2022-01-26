@@ -2,7 +2,8 @@
 .headers on
 .nullvalue NULL
 
--- A diferença de pontos dos jogadores e a média num torneio aleatório.
+-- Difference between points from Players and the tournament´s average
+
 CREATE VIEW IF NOT EXISTS randomIdTournament AS
     SELECT id_tournament
     FROM Tournament
