@@ -23,9 +23,9 @@ CREATE VIEW IF NOT EXISTS average AS
     SELECT ROUND(AVG(number_of_elo_points),0) AS average
     FROM playersRanking;
 
-SELECT first_name, last_name, number_of_elo_points, number_of_elo_points-average AS average_of_fide_points
+SELECT first_name AS firstName, last_name AS lastName , number_of_elo_points AS numberOfEloPoints, number_of_elo_points - average AS deviationFromTheAverage
 FROM playersRanking, average
-ORDER BY average_of_fide_points DESC;
+ORDER BY deviationFromTheAverage DESC;
 
 DROP VIEW randomIdTournament;
 DROP VIEW allPlayersInTournament;

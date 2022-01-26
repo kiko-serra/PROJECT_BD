@@ -14,7 +14,7 @@ CREATE VIEW IF NOT EXISTS randomIdWebsite AS
     FROM Website
     LIMIT 1 OFFSET (ABS(RANDOM()) % MAX((SELECT COUNT(*) FROM Website), 1));
     
-SELECT nickname, first_name, last_name, name AS Website_name
+SELECT nickname, first_name AS firstName, last_name AS lastName, name AS websiteName
 FROM nicknamePlayer, randomIdWebsite
 WHERE nicknamePlayer.id_website=randomIdWebsite.id_website
 ORDER BY nickname ASC LIMIT 10;

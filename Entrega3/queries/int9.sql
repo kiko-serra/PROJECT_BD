@@ -15,7 +15,7 @@ CREATE VIEW IF NOT EXISTS maxElo AS
     FROM Player INNER JOIN FideRanking
     ON Player.id_player = FideRanking.id_player;
 
-SELECT maxElo.id_player AS Player_ID, MAX(maxElo.number) AS NumberOfPoints, accountName.nickname AS NickName
+SELECT maxElo.id_player AS playerID, MAX(maxElo.number) AS numberOfPoints, accountName.nickname AS nickname
 FROM maxElo INNER JOIN accountName
 ON maxElo.id_player = accountName.id_player;
 

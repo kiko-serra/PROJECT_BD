@@ -4,5 +4,5 @@
 
 -- Club with the worst ranking
 
-SELECT MIN(ranking) AS PointsWorstClub, name AS ClubName
+SELECT name AS clubName, MIN(ranking) AS pointsWorstClub
 FROM ChessClub;
