@@ -4,7 +4,7 @@
 
 PRAGMA foreign_keys = ON;
 
---One player that is more than 20 years old and inserted as "JUNIORS" or "GIRLS" will be changed into "MEN" or "WOMEN" and vice-versa.
+--One player that is more than 30 years old and inserted as "JUNIORS" or "GIRLS" will be changed into "MEN" or "WOMEN" and vice-versa.
 
 CREATE TRIGGER IF NOT EXISTS WrongCategoryAdults 
     AFTER INSERT ON FideRanking
