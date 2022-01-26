@@ -15,4 +15,4 @@
 * Adicionar UML default no chessclub DONE
 * LevelOfSponsorTournament type nao pode ser null no uml DONE
 * LevelOfSponsorPlayer type nao pode ser null no uml DONE
-* Duracao das pecas em cada type tem que ser revista por causa dos >= no uml 
+* Duracao das pecas em cada type tem que ser revista por causa dos >= no uml DONE 
