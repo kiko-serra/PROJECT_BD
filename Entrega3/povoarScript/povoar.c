@@ -702,6 +702,13 @@ int main()
     // TABELA MEMBER_ID
     fprintf(dest, "\n\n\n------------------------------------------------------TABLE MEMBER_ID-------------------------------------------------------\n\n");
     aux = 0;
+    aux2 = 0;
+    int numOfMembers[MAX_CLUBS];
+    for (int i = 0; i < MAX_CLUBS - 1; i++)
+    {
+        numOfMembers[i] = rand() % 30 + 3;
+    }
+    numOfMembers[MAX_CLUBS - 1] = MAX_PLAYERS;
     for (int i = 0; i < MAX_PLAYERS; i++)
     {
         fprintf(dest, "INSERT INTO MemberId VALUES (%d,%d,%d);\n",
@@ -730,6 +737,12 @@ int main()
                 }
             }
         }
+        if (numOfMembers[aux] <= aux2)
+        {
+            aux2 = 0;
+            aux++;
+        }
+        aux2++;
     }
 
     // TABELA LEVEL_OF_SPONSOR_PLAYER

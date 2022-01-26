@@ -22,4 +22,5 @@ BEGIN
     UPDATE ChessClub 
     SET number_of_members = number_of_members - 1
     WHERE OLD.id_club = id_club;
+    DELETE FROM ChessClub WHERE OLD.id_club = id_club AND number_of_members < 3;
 END;
