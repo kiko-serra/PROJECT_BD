@@ -4,7 +4,7 @@
 
 PRAGMA foreign_keys = ON;
 
--- It checks if a Player was inserted in the MemberId table and adds it to the respective Club and table. If a Player is removed from the MemberId table it will also be removed from the Club table.
+-- It checks if a Player was inserted in the MemberId table and updates the table of the Club. If a Player is removed from the MemberId table it will also be removed from the Club table.
 -- If a player is removed and the Club's member number becomes less than 3, the Club will also be deleted.
 
 CREATE Trigger IF NOT EXISTS UpdateMembersInsert
